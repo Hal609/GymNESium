@@ -15,11 +15,11 @@ with open('README.md') as README_file:
 
 setup(
     name='gymnesium',
-    version='0.1.0',
+    version='0.1.1',
     description='An NES Gymnasium Environment',
     long_description=README,
     long_description_content_type='text/markdown',
-    keywords='NES Emulator OpenAI-Gym Gymnasium',
+    keywords='NES Emulator OpenAI-Gym Gymnasium Reinforcement-Learning-Environment',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',

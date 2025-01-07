@@ -25,39 +25,34 @@ class NESRam:
         self.nes[address] = value
 
 class NESEnv(gym.Env):
-    # relevant meta-data about the environment
-    metadata = {
-        'render_modes': ['rgb_array', 'human'],
-        'video.frames_per_second': 60
-    }
-
-    # the legal range for rewards for this environment
-    reward_range = (-float(15), float(15))
+    ''' NES Gymnasium Environment. '''
 
     def __init__(self, rom_path, headless=False):
-        # create a ROM file from the ROM path
+        """
+        Create a new NES environment.
+
+        Args:
+            rom_path (str): The path to the NES .rom file to be loaded.
+            headless (bool): Optional - Define whether the environment should run in headless mode with no window, or not.
+
+        Returns:
+            None
+
+        """
+        # Create a ROM file from the ROM path
         rom = ROM(rom_path)
-        # check that there is PRG ROM
-        if rom.prg_rom_size == 0:
-            raise ValueError('ROM has no PRG-ROM banks.')
-        # ensure that there is no trainer
-        if rom.has_trainer:
-            raise ValueError('ROM has trainer. trainer is not supported.')
-        # check the TV system
-        if rom.is_pal:
-            raise ValueError('ROM is PAL. PAL is not supported.')
         
-        # store the ROM path
-        self._rom_path = rom_path
-        # setup a placeholder for a pointer to a backup state
-        self._has_backup = False
-        # setup a done flag
-        self.done = True
+        # Check the ROM is valid
+        if rom.prg_rom_size == 0: raise ValueError('ROM has no PRG-ROM banks.')
+        if rom.has_trainer: raise ValueError('ROM has trainer. trainer is not supported.')
+        if rom.is_pal: raise ValueError('ROM is PAL. PAL is not supported.')
+        
+        self._has_backup = False # Initially no state has been saved
+        self.done = True # Setup a done flag
 
         self.headless = headless
-        self.nes = NES(self._rom_path) if self.headless else WindowedNES(self._rom_path)
+        self.nes = NES(rom_path) if self.headless else WindowedNES(rom_path) # Instance the cynes emulator
         self._ram = NESRam(self.nes)
-        self.done = True
 
         # Define observation and action spaces
         self.observation_space = Box(low=0, high=255, shape=(240, 256, 3), dtype=np.uint8)
@@ -69,16 +64,26 @@ class NESEnv(gym.Env):
         return self._ram
     
     def reset(self, seed=None, options=None):
-        super().reset(seed=seed)
-        # call the before reset callback
+        '''
+        Reset the emulator to the last save, or to power on if no save is present.
+
+        Args:
+            seed (optional int):    The seed that is used to initialize the parent Gym environment's PRNG (np_random).
+            
+            options (optional dict): Additional information to specify how the environment is reset (optional)
+        '''
+        super().reset(seed=seed, options=options)
+
+        # Call the before reset callback
         self._will_reset()
-        # reset the emulator
-        if self._has_backup:
-            self._restore()
-        else:
-            self.nes.reset()
-        # call the after reset callback
+
+        # Reset the emulator
+        if self._has_backup: self._restore()
+        else: self.nes.reset()
+
+        # Call the after reset callback
         self._did_reset()
+
         self.done = False
         obs = self.nes.step(frames=1)  # Capture an initial frame
         obs = np.array(obs, dtype=np.uint8)  # Ensure it's a valid numpy array
@@ -88,12 +93,12 @@ class NESEnv(gym.Env):
     def step(self, action):
         raise NotImplementedError
 
-    def _backup(self):
+    def _backup(self) -> None:
         """Backup the current emulator state."""
         self._backup_state = self.nes.save()
         self._has_backup = True
 
-    def _restore(self):
+    def _restore(self) -> None:
         """Restore the emulator state from backup."""
         self.nes.load(self._backup_state)
 
@@ -103,13 +108,13 @@ class NESEnv(gym.Env):
 
         Args:
             action (int): The action to perform (controller input).
-
         """
-
         # Set the controller inputs
         self.nes.controller = action
+
         # Advance the emulator by one frame
         frame = self.nes.step(frames=1)
+
         # Update the current frame (observation)
         self.screen = frame
 
