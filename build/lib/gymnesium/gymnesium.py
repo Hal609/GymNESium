@@ -6,6 +6,7 @@ import gymnasium as gym
 from gymnasium.spaces import Box
 from gymnasium.spaces import Discrete
 from abc import abstractmethod
+from ._rom import ROM
 
 # Height and width in pixels of the NES screen
 SCREEN_HEIGHT, SCREEN_WIDTH = 240, 256
@@ -23,36 +24,6 @@ class NESRam:
     def __setitem__(self, address, value):
         self.nes[address] = value
 
-    @property
-    def flags_6(self):
-        """Return the flags at the 6th byte of the header."""
-        return '{:08b}'.format(self.header[6])
-    
-    @property
-    def header(self):
-        """Return the header of the ROM file as bytes."""
-        return self.nes[:16]
-    
-    @property
-    def flags_9(self):
-        """Return the flags at the 9th byte of the header."""
-        return '{:08b}'.format(self.header[9])
-    
-    @property
-    def prg_rom_size(self):
-        """Return the size of the PRG ROM in KB."""
-        return 16 * self.header[4]
-    
-    @property
-    def has_trainer(self):
-        """Return a boolean determining if the ROM has a trainer block."""
-        return bool(int(self.flags_6[5]))
-    
-    @property
-    def is_pal(self):
-        """Return if the TV system this ROM supports is PAL."""
-        return bool(int(self.flags_9[7]))
-
 
 class NESEnv(gym.Env):
     ''' NES Gymnasium Environment. '''
@@ -68,9 +39,10 @@ class NESEnv(gym.Env):
         Returns:
             None
 
-        """        
-        self._ram = NESRam(self.nes)
-
+        """
+        # Create a ROM object from the ROM path
+        rom = ROM(rom_path)
+        
         # Check the ROM is valid
         if self._ram.prg_rom_size == 0: raise ValueError('ROM has no PRG-ROM banks.')
         if self._ram.has_trainer: raise ValueError('ROM has trainer. trainer is not supported.')
@@ -82,6 +54,7 @@ class NESEnv(gym.Env):
         # Create either windowless or windowed instance of the cynes emulator
         self.headless = headless
         self.nes = NES(rom_path) if self.headless else WindowedNES(rom_path)
+        self._ram = NESRam(self.nes)
 
         # Define observation and action spaces
         self.observation_space = Box(low=0, high=255, shape=(240, 256, 3), dtype=np.uint8)

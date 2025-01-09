@@ -2,6 +2,7 @@ LICENSE.txt
 README.md
 setup.py
 gymnesium/__init__.py
+gymnesium/_rom.py
 gymnesium/gymnesium.py
 gymnesium.egg-info/PKG-INFO
 gymnesium.egg-info/SOURCES.txt
