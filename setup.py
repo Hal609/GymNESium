@@ -15,7 +15,7 @@ with open('README.md') as README_file:
 
 setup(
     name='gymnesium',
-    version='0.1.4',
+    version='0.1.6',
     description='An NES Gymnasium Environment',
     long_description=README,
     long_description_content_type='text/markdown',
@@ -50,6 +50,8 @@ setup(
     install_requires=[
         'numpy>=1.18.5',
         'cynes>=0.1.0',
-        'gymnasium>=1.0.0'
+        'gymnasium>=1.0.0',
+        'pysdl2',
+        'pysdl2-dll'
     ],
 )

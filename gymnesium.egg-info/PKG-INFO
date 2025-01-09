@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: gymnesium
-Version: 0.1.4
+Version: 0.1.6
 Summary: An NES Gymnasium Environment
 Home-page: https://github.com/Hal609/GymNESium
 Author: Hal Kolb
@@ -32,6 +32,8 @@ License-File: LICENSE.txt
 Requires-Dist: numpy>=1.18.5
 Requires-Dist: cynes>=0.1.0
 Requires-Dist: gymnasium>=1.0.0
+Requires-Dist: pysdl2
+Requires-Dist: pysdl2-dll
 
 # GymNESium
 

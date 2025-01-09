@@ -44,9 +44,9 @@ class NESEnv(gym.Env):
         rom = ROM(rom_path)
         
         # Check the ROM is valid
-        if self._ram.prg_rom_size == 0: raise ValueError('ROM has no PRG-ROM banks.')
-        if self._ram.has_trainer: raise ValueError('ROM has trainer. trainer is not supported.')
-        if self._ram.is_pal: raise ValueError('ROM is PAL. PAL is not supported.')
+        if rom.prg_rom_size == 0: raise ValueError('ROM has no PRG-ROM banks.')
+        if rom.has_trainer: raise ValueError('ROM has trainer. trainer is not supported.')
+        if rom.is_pal: raise ValueError('ROM is PAL. PAL is not supported.')
         
         self._has_backup = False # Initially no state has been saved
         self.done = True # Setup a done flag
