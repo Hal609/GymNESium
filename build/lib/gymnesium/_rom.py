@@ -1,4 +1,5 @@
 """An abstraction of the NES Read-Only Memory (ROM).
+From: https://github.com/Kautenja/nes-py
 
 Notes:
     - http://wiki.nesdev.com/w/index.php/INES

@@ -1,12 +1,12 @@
 Metadata-Version: 2.1
 Name: gymnesium
-Version: 0.1.0
+Version: 0.1.2
 Summary: An NES Gymnasium Environment
 Home-page: https://github.com/Hal609/GymNESium
 Author: Hal Kolb
 Author-email: hal@kolb.co.uk
 License: MIT
-Keywords: NES Emulator OpenAI-Gym Gymnasium
+Keywords: NES Emulator OpenAI-Gym Gymnasium Reinforcement-Learning-Environment
 Classifier: Development Status :: 5 - Production/Stable
 Classifier: Intended Audience :: Developers
 Classifier: Intended Audience :: Science/Research

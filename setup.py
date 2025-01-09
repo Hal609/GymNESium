@@ -15,7 +15,7 @@ with open('README.md') as README_file:
 
 setup(
     name='gymnesium',
-    version='0.1.1',
+    version='0.1.2',
     description='An NES Gymnasium Environment',
     long_description=README,
     long_description_content_type='text/markdown',
